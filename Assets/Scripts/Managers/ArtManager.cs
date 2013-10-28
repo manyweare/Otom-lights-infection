@@ -26,7 +26,7 @@ public class ArtManager : MonoBehaviour
 	public Color32 GreyDotColor = new Color32(90, 90, 90, 255); // Grey
 	public Color32 WhiteDotColor = new Color32(255, 255, 255, 255); // White
 	public Color32 ChainColor = new Color32(255, 255, 255, 255);
-	public Material[] Patterns = new Material[7];
+	public Texture[] Patterns = new Texture[7];
 	public TweenParms bigSphereParms = new TweenParms();
 	public TweenParms deathParms = new TweenParms();
 	public TweenParms lockParms = new TweenParms();

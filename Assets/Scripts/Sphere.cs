@@ -141,14 +141,14 @@ public class Sphere : MonoBehaviour
         HOTween.To(myLight.light, 0.4f, "intensity", _lightIntensity);
     }
 
-    public void InstantiateShadowMesh(GameObject prefab)
-    {
-        myShadow = Instantiate(prefab, _myTransform.parent.position, Quaternion.identity) as GameObject;
-        myShadow.name = "Shadow";
-        myShadow.transform.localScale *= 0.5f;
-        myShadow.transform.localScale *= ArtManager.Instance.screenRatio;
-        myShadow.transform.parent = _myTransform;
-    }
+    //public void InstantiateShadowMesh(GameObject prefab)
+    //{
+    //    myShadow = Instantiate(prefab, _myTransform.parent.position, Quaternion.identity) as GameObject;
+    //    myShadow.name = "Shadow";
+    //    myShadow.transform.localScale *= 0.5f;
+    //    myShadow.transform.localScale *= ArtManager.Instance.screenRatio;
+    //    myShadow.transform.parent = _myTransform;
+    //}
 
     //public void InstantiateHighlightMesh(GameObject prefab)
     //{
@@ -189,11 +189,12 @@ public class Sphere : MonoBehaviour
     {
         // Random index for material and color lists.
         int i = (int)UnityEngine.Random.Range(0, colorList.Count);
-        //// Assign new material.
-        //if (ArtManager.Instance.Patterns[i] != null)
-        //{
-        //    targetObject.renderer.material = ArtManager.Instance.Patterns[i];
-        //}
+        // Assign new material.
+        if (ArtManager.Instance.Patterns[i] != null)
+        {
+            targetObject.renderer.material.SetTexture("_Detail", ArtManager.Instance.Patterns[i]);
+            targetObject.renderer.material.SetFloat("_DetailTiling", 15f);
+        }
         // Assign new color.
         targetObject.renderer.material.color = colorList[i];
         CurrentColor = colorList[i];
@@ -235,13 +236,12 @@ public class Sphere : MonoBehaviour
 
     public void WrongSphere()
     {
-        myLight.light.color = WrongColor;
+        AnimateLightProperties(_lightIntensity, _lightRange * 2f, 0.2f, WrongColor);
     }
 
     public void SquareSphere()
     {
-        myLight.light.color = ArtManager.Instance.ChainColor;
-        AnimateLightProperties(_lightIntensity, _lightRange * 2f, 0.2f);
+        AnimateLightProperties(_lightIntensity, _lightRange * 2f, 0.2f, ArtManager.Instance.ChainColor);
     }
 
     public void LockSelf()
@@ -259,19 +259,17 @@ public class Sphere : MonoBehaviour
         isLockable = false;
         MyMesh.GetComponent<MeshNoise>().StopMorph();
         StartCoroutine("ReturnShapeToNormal");
-        AnimateLightProperties(_lightIntensity, _lightRange, 0.2f);
+        AnimateLightProperties(_lightIntensity, _lightRange, 0.2f, CurrentColor);
     }
 
     public void HighlightLock()
     {
-        //myLight.light.color = ArtManager.Instance.ChainColor;
-        AnimateLightProperties(_lightIntensity, _lightRange * 2f, 0.2f);
+        AnimateLightProperties(_lightIntensity, _lightRange * 2f, 0.2f, ArtManager.Instance.ChainColor);
     }
 
     public void ResetLock()
     {
-        //myLight.light.color = CurrentColor;
-        AnimateLightProperties(0f, 0f, 0.2f);
+        AnimateLightProperties(0f, 0f, 0.2f, CurrentColor);
     }
 
     public void HideSelf()
@@ -298,7 +296,7 @@ public class Sphere : MonoBehaviour
 
     void AnimateLightProperties(float intensity, float range, float duration, Color color)
     {
-        myLight.light.color = color;
+        HOTween.To(myLight.light, duration, "color", color);
         AnimateLightProperties(intensity, range, duration);
     }
 

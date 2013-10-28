@@ -1097,7 +1097,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!108 &727922586
 Light:
   m_ObjectHideFlags: 0
@@ -1108,14 +1108,14 @@ Light:
   serializedVersion: 3
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: .699999988
+  m_Intensity: .150000006
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
-    m_Strength: .600000024
+    m_Strength: .5
     m_Bias: .00999999978
     m_Softness: 8
     m_SoftnessFade: 1.5
@@ -1139,8 +1139,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 727922585}
-  m_LocalRotation: {x: .0435778722, y: .0435778722, z: -.00190265093, w: .99809736}
-  m_LocalPosition: {x: 0, y: 0, z: -5.78761578}
+  m_LocalRotation: {x: .0261679795, y: .0261679795, z: -.000685232691, w: .999314785}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2881,16 +2881,16 @@ MonoBehaviour:
   ExtraColors: []
   Color01:
     serializedVersion: 2
-    rgba: 4285530367
+    rgba: 4279828272
   Color02:
     serializedVersion: 2
-    rgba: 4294901876
+    rgba: 4294904120
   Color03:
     serializedVersion: 2
-    rgba: 4294938368
+    rgba: 4294958596
   Color04:
     serializedVersion: 2
-    rgba: 4283415552
+    rgba: 4278190268
   Color05:
     serializedVersion: 2
     rgba: 4278238463
@@ -2904,13 +2904,13 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4294967295
   Patterns:
-  - {fileID: 2100000, guid: e46d8ae26bf23a44d8f5db7d5f2f05d6, type: 2}
-  - {fileID: 2100000, guid: e46d8ae26bf23a44d8f5db7d5f2f05d6, type: 2}
-  - {fileID: 2100000, guid: e46d8ae26bf23a44d8f5db7d5f2f05d6, type: 2}
-  - {fileID: 2100000, guid: e46d8ae26bf23a44d8f5db7d5f2f05d6, type: 2}
-  - {fileID: 2100000, guid: e46d8ae26bf23a44d8f5db7d5f2f05d6, type: 2}
-  - {fileID: 2100000, guid: e46d8ae26bf23a44d8f5db7d5f2f05d6, type: 2}
-  - {fileID: 2100000, guid: e46d8ae26bf23a44d8f5db7d5f2f05d6, type: 2}
+  - {fileID: 2800000, guid: 88567fee40cb03d46ba8720dd443ccc7, type: 3}
+  - {fileID: 2800000, guid: c6ac2edb1d87dee438b9f8876c8f6712, type: 3}
+  - {fileID: 2800000, guid: fa50c51fb7ceaca47807ef84d7f3e48a, type: 3}
+  - {fileID: 2800000, guid: e44f140494bbbed42900834d97728c57, type: 3}
+  - {fileID: 2800000, guid: 68a74fdbd5d36cd458a34c2d1989d180, type: 3}
+  - {fileID: 2800000, guid: 82610ff8d73173d4bb006a628273762b, type: 3}
+  - {fileID: 2800000, guid: c1d898eaad04e2f4aadea0c00fbefef5, type: 3}
   LockedColor: {r: 1, g: 1, b: 1, a: 1}
   screenRatio: 1
 --- !u!114 &2146698647
