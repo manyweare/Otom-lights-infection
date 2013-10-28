@@ -89,7 +89,7 @@ public class DotManager : MonoBehaviour
         {
             Sphere activeSphere = hit.collider.gameObject.GetComponent<Sphere>();
             // If the current dot is locked, do nothing.
-            if (activeSphere.Locked.activeSelf)
+            if (activeSphere.isLocked)
                 return;
 
             GameObject activeMesh = activeSphere.MyMesh;
@@ -128,7 +128,7 @@ public class DotManager : MonoBehaviour
         {
             Sphere activeSphere = hit.collider.gameObject.GetComponent<Sphere>();
             // If the current dot is locked, do nothing.
-            if (activeSphere.Locked.activeSelf)
+            if (activeSphere.isLocked)
                 return;
 
             GameObject activeMesh = activeSphere.MyMesh;
@@ -400,7 +400,7 @@ public class DotManager : MonoBehaviour
             foreach (Collider n in neighbors)
             {
                 Sphere hitDot = n.GetComponent<Sphere>();
-                if (hitDot.IsLockable && !newLocks.Contains(hitDot))
+                if (hitDot.isLockable && !newLocks.Contains(hitDot))
                 {
                     if (ShouldBeLocked())
                     {
@@ -433,7 +433,7 @@ public class DotManager : MonoBehaviour
         var lockableList = new List<Sphere>();
         for (int i = 0; i < cleanList.Count; i++)
         {
-            if (cleanList[i].IsLockable)
+            if (cleanList[i].isLockable)
                 lockableList.Add(cleanList[i]);
         }
         if (lockableList.Count == 0)

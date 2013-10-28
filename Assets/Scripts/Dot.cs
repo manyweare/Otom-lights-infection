@@ -13,8 +13,8 @@ public class Dot : MonoBehaviour
 		if (dotMesh && lockedMesh)
 		{
 			_mesh = dotMesh;
-			_lockedMesh = lockedMesh;
-			_highlightMesh = dotMesh;
+            //_lockedMesh = lockedMesh;
+            //_highlightMesh = dotMesh;
 			_mesh.AddComponent("Sphere");
 			gameObject.AddComponent("Rigidbody");
 			gameObject.AddComponent("Box Collider");
@@ -55,39 +55,39 @@ public class Dot : MonoBehaviour
 		}
 	}
 
-	// Mesh the dot turns into when locked.
-	public GameObject _lockedMesh {
-		get {
-			if (_sphere.Locked == null)
-				_sphere.InstantiateLockedMesh(LockedPrefab);
-			return _sphere.Locked;
-		}
-		set {
-			if (value.GetType() == typeof(GameObject))
-			{
-				Destroy(_sphere.Locked);
-				_sphere.InstantiateLockedMesh(value);
-			} else
-				Debug.Log("Invalid type: Has to be a Game Object.");
-		}
-	}
+    //// Mesh the dot turns into when locked.
+    //public GameObject _lockedMesh {
+    //    get {
+    //        if (_sphere.Locked == null)
+    //            _sphere.InstantiateLockedMesh(LockedPrefab);
+    //        return _sphere.Locked;
+    //    }
+    //    set {
+    //        if (value.GetType() == typeof(GameObject))
+    //        {
+    //            Destroy(_sphere.Locked);
+    //            _sphere.InstantiateLockedMesh(value);
+    //        } else
+    //            Debug.Log("Invalid type: Has to be a Game Object.");
+    //    }
+    //}
 
-	// Mesh displayed when the dot is highlighted by tap or mouse press.
-	public GameObject _highlightMesh {
-		get {
-			if (_sphere.Highlight == null)
-				_sphere.InstantiateHighlightMesh(DotPrefab);
-			return _sphere.Highlight;
-		}
-		set {
-			if (value.GetType() == typeof(GameObject))
-			{
-				Destroy(_sphere.Highlight);
-				_sphere.InstantiateHighlightMesh(value);
-			} else
-				Debug.Log("Invalid type: Has to be a Game Object.");
-		}
-	}
+    //// Mesh displayed when the dot is highlighted by tap or mouse press.
+    //public GameObject _highlightMesh {
+    //    get {
+    //        if (_sphere.Highlight == null)
+    //            _sphere.InstantiateHighlightMesh(DotPrefab);
+    //        return _sphere.Highlight;
+    //    }
+    //    set {
+    //        if (value.GetType() == typeof(GameObject))
+    //        {
+    //            Destroy(_sphere.Highlight);
+    //            _sphere.InstantiateHighlightMesh(value);
+    //        } else
+    //            Debug.Log("Invalid type: Has to be a Game Object.");
+    //    }
+    //}
 
 	public Color _color {
 		get { return _mesh.renderer.material.color; }

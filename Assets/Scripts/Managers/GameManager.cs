@@ -274,7 +274,7 @@ public class GameManager : MonoBehaviour
 			foreach (Collider hit in hitColliders)
 			{
 				Sphere hitDot = hit.GetComponent<Sphere>();
-				bool isLocked = hitDot.Locked.activeSelf;
+				bool isLocked = hitDot.isLocked;
 				bool isSelf = hit.transform.parent.gameObject.name == dot.transform.parent.name;
 				bool hasSameColorNeighbor = (Color)thisDot.renderer.material.color == (Color)hitDot.CurrentColor;
 				bool hasWhiteNeighbor = (Color)hitDot.CurrentColor == (Color)ArtManager.Instance.WhiteDotColor;

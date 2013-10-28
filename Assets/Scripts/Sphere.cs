@@ -5,10 +5,10 @@ using Holoville.HOTween;
 
 public class Sphere : MonoBehaviour
 {
-    public GameObject HighlightPrefab, LockedPrefab, ShadowPrefab;
+    public GameObject HighlightPrefab, ShadowPrefab;
     public Color32 CurrentColor = Color.black;
     public Color WrongColor = Color.red;
-    public GameObject MyMesh, Highlight, Locked;
+    public GameObject MyMesh, Highlight;
     public Material PlainMaterial;
     private GameObject myShadow;
     private Transform _myTransform, _lockedTransform;
@@ -16,14 +16,15 @@ public class Sphere : MonoBehaviour
     private GameObject[] powerUpAnimPool = new GameObject[36];
     private GameObject myLight;
     private int numTurnsUnlockable = 0;
+    public bool isLocked = false;
 
     // This property controls weather or not a circle is lockable.
     private bool _isLockable = true;
-    public bool IsLockable
+    public bool isLockable
     {
         get
         {
-            if ((Color)CurrentColor == (Color)ArtManager.Instance.WhiteDotColor)
+            if ((Color)CurrentColor == (Color)ArtManager.Instance.WhiteDotColor || isLocked)
             {
                 _isLockable = false;
                 return _isLockable;
@@ -59,7 +60,7 @@ public class Sphere : MonoBehaviour
     private Vector3[] _originalVerts;
 
     private bool stopMorph = false;
-    private float _lightIntensity = 3f;
+    private float _lightIntensity = 2.5f;
     private float _lightRange = 0.2f;
 
     void Awake()
@@ -101,7 +102,10 @@ public class Sphere : MonoBehaviour
     private void NextTurn()
     {
         if (numTurnsUnlockable > 0)
+        {
             --numTurnsUnlockable;
+            HOTween.To(myLight.light, 0.2f, "intensity", myLight.light.intensity + (float)numTurnsUnlockable);
+        }
     }
 
     #region CONSTRUCTOR METHODS
@@ -114,8 +118,8 @@ public class Sphere : MonoBehaviour
         MyMesh.transform.parent = _myTransform;
         MyMesh.AddComponent<MeshNoise>();
 
-        InstantiateHighlightMesh(HighlightPrefab);
-        InstantiateLockedMesh(LockedPrefab);
+        //InstantiateHighlightMesh(HighlightPrefab);
+        //InstantiateLockedMesh(LockedPrefab);
         //InstantiateShadowMesh(ShadowPrefab);
         InstantiatePowerUpAnimPool(MyMesh);
         InstantiateLight();
@@ -146,32 +150,32 @@ public class Sphere : MonoBehaviour
         myShadow.transform.parent = _myTransform;
     }
 
-    public void InstantiateHighlightMesh(GameObject prefab)
-    {
-        // This is the prefab that activates when player taps on dot.
-        Highlight = Instantiate(prefab, _myTransform.position, Quaternion.identity) as GameObject;
-        Highlight.name = "Highlight";
-        Highlight.transform.localScale *= ArtManager.Instance.screenRatio;
-        Highlight.transform.parent = _myTransform;
-        Highlight.SetActive(false);
-    }
+    //public void InstantiateHighlightMesh(GameObject prefab)
+    //{
+    //    // This is the prefab that activates when player taps on dot.
+    //    Highlight = Instantiate(prefab, _myTransform.position, Quaternion.identity) as GameObject;
+    //    Highlight.name = "Highlight";
+    //    Highlight.transform.localScale *= ArtManager.Instance.screenRatio;
+    //    Highlight.transform.parent = _myTransform;
+    //    Highlight.SetActive(false);
+    //}
 
-    public void InstantiateLockedMesh(GameObject prefab)
-    {
-        Locked = Instantiate(prefab, _myTransform.position, Quaternion.identity) as GameObject;
-        Locked.name = "Locked";
-        _lockedTransform = Locked.transform;
-        _lockedTransform.localScale = Vector3.zero;
-        _lockedTransform.parent = _myTransform;
-        Locked.SetActive(false);
-    }
+    //public void InstantiateLockedMesh(GameObject prefab)
+    //{
+    //    Locked = Instantiate(prefab, _myTransform.position, Quaternion.identity) as GameObject;
+    //    Locked.name = "Locked";
+    //    _lockedTransform = Locked.transform;
+    //    _lockedTransform.localScale = Vector3.zero;
+    //    _lockedTransform.parent = _myTransform;
+    //    Locked.SetActive(false);
+    //}
 
     void InstantiatePowerUpAnimPool(GameObject prefab)
     {
         for (int i = 0; i < powerUpAnimPool.Length; i++)
         {
             powerUpAnimPool[i] = Instantiate(prefab, _myTransform.position + new Vector3(0f, 0f, -2f), Quaternion.identity) as GameObject;
-            powerUpAnimPool[i].name = "power up obj" + i.ToString();
+            powerUpAnimPool[i].name = "power up obj " + i.ToString();
             powerUpAnimPool[i].renderer.material.color = CurrentColor;
             powerUpAnimPool[i].transform.localScale *= 0.5f;
             powerUpAnimPool[i].transform.parent = _myTransform;
@@ -202,30 +206,31 @@ public class Sphere : MonoBehaviour
 
     public void AnimateBirth()
     {
+        isLockable = true;
         pulseSequence.Pause();
         AssignNewRandomColor(ArtManager.Instance.ColorList, MyMesh);
-        Highlight.renderer.material.color = MyMesh.renderer.material.color;
+        //Highlight.renderer.material.color = MyMesh.renderer.material.color;
         ReturnShapeToNormalInstantly();
         HOTween.To(_myTransform, 0.2f, "localScale", ArtManager.Instance.OriginalScale);
-        IsLockable = true;
+        AnimateLightProperties(_lightIntensity, _lightRange, 0.2f);
     }
 
     public void AnimateDeath()
     {
         ReturnShapeToNormalInstantly();
         pulseSequence.Pause();
-        DeactivateHighlight();
+        AnimateLightProperties(0f, 0f, 0.2f);
         HOTween.To(_myTransform, 0.1f, ArtManager.Instance.deathParms);
     }
 
     public void ActivateHighlight()
     {
-        BrightenLight(2f);
+        AnimateLightProperties(_lightIntensity, _lightRange * 2f, 0.2f);
     }
 
     public void DeactivateHighlight()
     {
-        RestoreLight();
+        AnimateLightProperties(_lightIntensity, _lightRange, 0.2f);
     }
 
     public void WrongSphere()
@@ -236,41 +241,37 @@ public class Sphere : MonoBehaviour
     public void SquareSphere()
     {
         myLight.light.color = ArtManager.Instance.ChainColor;
-        BrightenLight(2f);
+        AnimateLightProperties(_lightIntensity, _lightRange * 2f, 0.2f);
     }
 
     public void LockSelf()
     {
-        IsLockable = false;
+        isLocked = true;
+        isLockable = false;
+        AnimateLightProperties(0f, 0f, 0.2f);
         pulseSequence.Pause();
-        Locked.SetActive(true);
-        var nObj = new NoiseObject();
-        nObj.obj = MyMesh;
-        nObj.scale = 0.05f;
-        nObj.speed = 1f;
-        nObj.duration = 0f;
-        DimLight();
         MyMesh.GetComponent<MeshNoise>().Morph();
     }
 
     public void UnlockSelf()
     {
-        IsLockable = true;
-        Locked.SetActive(false);
+        isLocked = false;
+        isLockable = false;
+        MyMesh.GetComponent<MeshNoise>().StopMorph();
         StartCoroutine("ReturnShapeToNormal");
-        RestoreLight();
+        AnimateLightProperties(_lightIntensity, _lightRange, 0.2f);
     }
 
     public void HighlightLock()
     {
-        myLight.light.color = ArtManager.Instance.ChainColor;
-        BrightenLight(1f);
+        //myLight.light.color = ArtManager.Instance.ChainColor;
+        AnimateLightProperties(_lightIntensity, _lightRange * 2f, 0.2f);
     }
 
     public void ResetLock()
     {
-        myLight.light.color = CurrentColor;
-        DimLight();
+        //myLight.light.color = CurrentColor;
+        AnimateLightProperties(0f, 0f, 0.2f);
     }
 
     public void HideSelf()
@@ -284,26 +285,21 @@ public class Sphere : MonoBehaviour
     {
         AssignNewRandomColor(ArtManager.Instance.ColorList, MyMesh);
         HOTween.To(_myTransform, 0.2f, ArtManager.Instance.showParms);
-        RestoreLight();
+        if (!isLocked)
+            AnimateLightProperties(_lightIntensity, _lightRange, 0.2f, CurrentColor);
     }
 
-    void RestoreLight()
+    void AnimateLightProperties(float intensity, float range, float duration)
     {
         myLight.SetActive(true);
-        myLight.light.color = CurrentColor;
-        HOTween.To(myLight.light, 0.4f, "intensity", _lightIntensity);
-        HOTween.To(myLight.light, 0.4f, "range", _lightRange);
+        HOTween.To(myLight.light, duration, "intensity", intensity);
+        HOTween.To(myLight.light, duration, "range", range);
     }
 
-    void BrightenLight(float multiplier)
+    void AnimateLightProperties(float intensity, float range, float duration, Color color)
     {
-        HOTween.To(myLight.light, 0.4f, "intensity", _lightIntensity * multiplier);
-        HOTween.To(myLight.light, 0.4f, "range", _lightRange * multiplier);
-    }
-
-    void DimLight()
-    {
-        HOTween.To(myLight.light, 0.4f, "intensity", 0f);
+        myLight.light.color = color;
+        AnimateLightProperties(intensity, range, duration);
     }
 
     // Method to animate the death of the chained dot and send a copy to the corresponding power up color.
