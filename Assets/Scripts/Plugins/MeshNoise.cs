@@ -3,17 +3,12 @@ using System.Collections;
 
 public class MeshNoise : MonoBehaviour
 {
-    public float scale = 0.05f;
-    public float speed = 2f;
+    public float scale = 3f;
+    public float speed = 1f;
     public bool recalculateNormals = false;
 
     private Vector3[] baseVertices;
     private Perlin noise;
-
-    void Start()
-    {
-        noise = new Perlin();
-    }
 
     public void Morph()
     {
@@ -27,6 +22,7 @@ public class MeshNoise : MonoBehaviour
 
     IEnumerator CoMorph()
     {
+        noise = new Perlin();
         Mesh mesh = GetComponent<MeshFilter>().mesh;
 
         if (baseVertices == null)
@@ -35,9 +31,9 @@ public class MeshNoise : MonoBehaviour
 
         while (true)
         {
-            var timex = Time.time * speed + 10.1365143f;
-            var timey = Time.time * speed + 21.21688f;
-            var timez = Time.time * speed + 32.5564f;
+            var timex = Time.time * speed + 0.1365143f;
+            var timey = Time.time * speed + 1.21688f;
+            var timez = Time.time * speed + 2.5564f;
 
             for (var i = 0; i < vertices.Length; i++)
             {

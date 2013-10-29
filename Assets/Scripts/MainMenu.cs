@@ -15,7 +15,7 @@ public class MainMenu : MonoBehaviour
 	private bool isHidden = true;
 	private bool soundIsOn = true;
 	private AudioListener _listener;
-//	private VectorLine titleLine, versionLine, newGameLine, statsLine, soundLine, aboutLine;
+    //private VectorLine titleLine, versionLine, newGameLine, statsLine, soundLine, aboutLine;
 
 	#region SINGLETON
 
@@ -54,18 +54,18 @@ public class MainMenu : MonoBehaviour
 
 		StartCoroutine("ShowSelf");
 
-//		titleLine = new VectorLine("Title line", new Vector2[32], LineMaterial, 1f);
-//		var startingPos = new Vector2(40f, Screen.height - 40f);
-//		titleLine.MakeText("Otom", startingPos, 100f);
-//		titleLine.SetColor(ArtManager.Instance.ColorList[0]);
-//		titleLine.Draw();
-//
-//		versionLine = new VectorLine("Version line", new Vector2[32], LineMaterial, 1f);
-//		versionLine.MakeText(VersionNumber, startingPos + new Vector2(0f, -120f), 10f);
-//		versionLine.SetColor(ArtManager.Instance.ColorList[0]);
-//		versionLine.Draw();
+        //titleLine = new VectorLine("Title line", new Vector2[32], LineMaterial, 1f);
+        //var startingPos = new Vector2(40f, Screen.height - 40f);
+        //titleLine.MakeText("Otom", startingPos, 100f);
+        //titleLine.SetColor(ArtManager.Instance.ColorList[0]);
+        //titleLine.Draw();
 
-//		BuildMainMenu();
+        //versionLine = new VectorLine("Version line", new Vector2[32], LineMaterial, 1f);
+        //versionLine.MakeText(VersionNumber, startingPos + new Vector2(0f, -120f), 10f);
+        //versionLine.SetColor(ArtManager.Instance.ColorList[0]);
+        //versionLine.Draw();
+
+        //BuildMainMenu();
 	}
 
 	void Update()
@@ -102,22 +102,22 @@ public class MainMenu : MonoBehaviour
 		}
 	}
 
-//	void BuildMainMenu()
-//	{
-//		newGameLine = BuildMenuItem(newGameLine, "New Game", 50f, new Vector2(10f, Screen.height - 200f), Color.white);
-//		statsLine = BuildMenuItem(statsLine, "Stats", 50f, new Vector2(10f, Screen.height - 280f), Color.white);
-//		soundLine = BuildMenuItem(soundLine, "Sound On", 50f, new Vector2(10f, Screen.height - 360f), Color.white);
-//		aboutLine = BuildMenuItem(aboutLine, "About", 50f, new Vector2(10f, Screen.height - 440f), Color.white);
-//	}
-//
-//	VectorLine BuildMenuItem(VectorLine vectorLine, string buttonText, float size, Vector2 position, Color color)
-//	{
-//		vectorLine = new VectorLine(buttonText + "line", new Vector2[32], LineMaterial, 1f);
-//		vectorLine.MakeText(buttonText, position, size);
-//		vectorLine.SetColor(color);
-//		vectorLine.Draw();
-//		return vectorLine;
-//	}
+    //void BuildMainMenu()
+    //{
+    //    newGameLine = BuildMenuItem(newGameLine, "New Game", 50f, new Vector2(10f, Screen.height - 200f), Color.white);
+    //    statsLine = BuildMenuItem(statsLine, "Stats", 50f, new Vector2(10f, Screen.height - 280f), Color.white);
+    //    soundLine = BuildMenuItem(soundLine, "Sound On", 50f, new Vector2(10f, Screen.height - 360f), Color.white);
+    //    aboutLine = BuildMenuItem(aboutLine, "About", 50f, new Vector2(10f, Screen.height - 440f), Color.white);
+    //}
+
+    //VectorLine BuildMenuItem(VectorLine vectorLine, string buttonText, float size, Vector2 position, Color color)
+    //{
+    //    vectorLine = new VectorLine(buttonText + "line", new Vector2[32], LineMaterial, 1f);
+    //    vectorLine.MakeText(buttonText, position, size);
+    //    vectorLine.SetColor(color);
+    //    vectorLine.Draw();
+    //    return vectorLine;
+    //}
 
 	void MainMenuActions(GameObject button)
 	{

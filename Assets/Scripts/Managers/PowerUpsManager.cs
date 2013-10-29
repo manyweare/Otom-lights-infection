@@ -5,9 +5,9 @@ using Holoville.HOTween;
 
 public class PowerUpsManager : MonoBehaviour
 {
-	public GameObject ExplosionPrefab;
-	public GameObject Button, Bar, Circle;
+	public GameObject ExplosionPrefab, Button, Bar, Circle;
 	public PowerUpText Text01, Text02, Text03, Text04, Text05;
+    public Material TrackMaterial;
 	[HideInInspector]
 	public int[] PowerUpArray = new int[] { 0, 0, 0, 0, 0 };
 	[HideInInspector]
@@ -76,21 +76,25 @@ public class PowerUpsManager : MonoBehaviour
 		// Color 05 Power Up.
 		Text05.MyColor = ArtManager.Instance.ColorList[4];
 		textList.Add(Text05);
-		
-		// Generate background for power up texts.
-		for (int i = 0; i < textList.Count; i++)
-		{
-			// Circle number background.
-			var circle = Instantiate(Circle, Vector3.zero, Quaternion.identity) as GameObject;
-			circle.transform.position = Camera.main.ViewportToWorldPoint(textList[i].transform.position);
-			// Ensure circle is in front of all other button layers.
-			circle.transform.position = new Vector3(circle.transform.position.x, circle.transform.position.y + 0.005f, -0.3f);
-			circle.transform.localScale *= ArtManager.Instance.screenRatio * 1.2f;
-			_originalCircleScale = circle.transform.localScale;
-			circle.transform.parent = textList[i].transform;
-			circle.renderer.material.color = Color.white;
-			CircleList.Add(circle);
-		}
+
+        // Generate background for power up texts.
+        for (int i = 0; i < textList.Count; i++)
+        {
+            // Circle number background.
+            var circle = Instantiate(Circle, Vector3.zero, Quaternion.identity) as GameObject;
+            circle.transform.position = Camera.main.ViewportToWorldPoint(textList[i].transform.position);
+            // Ensure circle is in front of all other button layers.
+            circle.transform.position = new Vector3(circle.transform.position.x, circle.transform.position.y + 0.005f, -0.3f);
+            circle.transform.localScale *= ArtManager.Instance.screenRatio * 2f;
+            _originalCircleScale = circle.transform.localScale;
+            circle.transform.parent = textList[i].transform;
+            circle.renderer.material = TrackMaterial;
+            circle.renderer.material.SetTexture("_Detail", ArtManager.Instance.Patterns[i]);
+            circle.renderer.material.SetFloat("_DetailTiling", 15f * ArtManager.Instance.screenRatio);
+            circle.renderer.material.color = ArtManager.Instance.ColorList[i];
+            circle.renderer.material.SetColor("_RimColor", ArtManager.Instance.ColorList[i]);
+            CircleList.Add(circle);
+        }
 
 		GenerateButtons(Button, Bar, 5);
 
@@ -144,16 +148,18 @@ public class PowerUpsManager : MonoBehaviour
 			myTrack.transform.localScale = new Vector3(myTrack.transform.localScale.x * ArtManager.Instance.screenRatio, 1f, 1f);
 			myTrack.transform.parent = _myTransform;
 			myTrack.name = "Track0" + i.ToString();
-            //myTrack.renderer.material = ArtManager.Instance.Patterns[i - 1];
-            //myTrack.renderer.material.mainTextureScale = new Vector2(3f * ArtManager.Instance.screenRatio, 3f);
+            myTrack.renderer.material = TrackMaterial;
+            myTrack.renderer.material.SetTexture("_Detail", ArtManager.Instance.Patterns[i - 1]);
+            myTrack.renderer.material.SetFloat("_DetailTiling", 15f * ArtManager.Instance.screenRatio);
             myTrack.renderer.material.color = ArtManager.Instance.ColorList[i - 1];
+            myTrack.renderer.material.SetColor("_RimColor", ArtManager.Instance.ColorList[i - 1]);
 			trackList.Add(myTrack);
 
-            //// Alternate track colors to divide buttons.
-            //if (i % 2 == 0)
-            //    myTrack.renderer.material.color = new Color(0.15f, 0.15f, 0.15f, 1f);
-            //else
-            //    myTrack.renderer.material.color = new Color(0.1f, 0.1f, 0.1f, 1f);
+            // Alternate track colors to divide buttons.
+            if (i % 2 == 0)
+                myTrack.renderer.material.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+            else
+                myTrack.renderer.material.color = new Color(0.1f, 0.1f, 0.1f, 1f);
 		}
 	}
 
@@ -216,19 +222,19 @@ public class PowerUpsManager : MonoBehaviour
 		float s = ((float)ColorScoreList[colorIndex] / (float)GameManager.Instance.ColorScorePerPower) * 1.05f;
 		s *= ArtManager.Instance.screenRatio;
 		HOTween.To(barList[colorIndex].transform, 0.2f, "localScale", new Vector3(s, PROGRESS_BAR_HEIGHT, 1f));
-		AnimateCircle(colorIndex);
+        //AnimateCircle(colorIndex);
 	}
-	
-	// Animation that plays when the power up button gets a new circle.
-	void AnimateCircle(int i)
-	{
-		var circleSequence = new Sequence();
-		circleSequence.Append(HOTween.To(CircleList[i].transform, 0.2f, 
-			new TweenParms().NewProp("localScale", _originalCircleScale * 1.3f).Ease(EaseType.EaseInExpo)));
-		circleSequence.Append(HOTween.To(CircleList[i].transform, 0.6f, 
-			new TweenParms().NewProp("localScale", _originalCircleScale).Ease(EaseType.EaseOutExpo)));
-		circleSequence.Play();
-	}
+
+    // Animation that plays when the power up button gets a new circle.
+    void AnimateCircle(int i)
+    {
+        var circleSequence = new Sequence();
+        circleSequence.Append(HOTween.To(CircleList[i].transform, 0.2f,
+            new TweenParms().NewProp("localScale", _originalCircleScale * 1.3f).Ease(EaseType.EaseInExpo)));
+        circleSequence.Append(HOTween.To(CircleList[i].transform, 0.6f,
+            new TweenParms().NewProp("localScale", _originalCircleScale).Ease(EaseType.EaseOutExpo)));
+        circleSequence.Play();
+    }
 
 	IEnumerator AnimateTap(GameObject button)
 	{
@@ -257,7 +263,7 @@ public class PowerUpsManager : MonoBehaviour
 	IEnumerator AnimateExplosion(Color color, Vector3 position)
 	{
 		AudioManager.Instance.PlayExplosionSound(color);
-		var explosion = Instantiate(ExplosionPrefab, position + new Vector3(0.1f, 0f, 10f), Quaternion.identity) as GameObject;
+		var explosion = Instantiate(ExplosionPrefab, position + new Vector3(0.1f, 0f, 0f), Quaternion.identity) as GameObject;
 		explosion.renderer.material.color = color;
 		HOTween.To(explosion.transform, 0.6f, explosionParms);
 		yield return new WaitForSeconds(0.4f);

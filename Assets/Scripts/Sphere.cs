@@ -56,18 +56,18 @@ public class Sphere : MonoBehaviour
     }
 
     // Mesh randomizer cache variables.
+    private Vector3 _originalSize;
     private Mesh _originalMesh;
     private Vector3[] _originalVerts;
 
     private bool stopMorph = false;
-    private float _lightIntensity = 2.5f;
-    private float _lightRange = 0.2f;
+    private float _lightIntensity = 10f;
+    private float _lightRange = 0.3f;
 
     void Awake()
     {
         _myTransform = transform;
-        _myTransform.localScale *= ArtManager.Instance.screenRatio;
-        var _originalSize = _myTransform.localScale;
+        _myTransform.localScale = ArtManager.Instance.OriginalScale;
 
         GameEventManager.NextTurn += NextTurn;
 
@@ -76,7 +76,7 @@ public class Sphere : MonoBehaviour
         var firstPulseTween = HOTween.To(_myTransform, 0.4f,
             new TweenParms().Prop("localScale", _myTransform.localScale + new Vector3(0.15f, 0.15f, 0.15f)).Ease(EaseType.EaseInExpo));
         var backPulseTween = HOTween.To(_myTransform, 0.2f,
-            new TweenParms().Prop("localScale", _originalSize).Ease(EaseType.EaseOutExpo));
+            new TweenParms().Prop("localScale", ArtManager.Instance.OriginalScale).Ease(EaseType.EaseOutExpo));
         var secondPulseTween = HOTween.To(_myTransform, 0.2f,
             new TweenParms().Prop("localScale", _myTransform.localScale + new Vector3(0.1f, 0.1f, 0.1f)).Ease(EaseType.EaseInExpo));
         pulseSequence.Append(firstPulseTween);
@@ -193,12 +193,11 @@ public class Sphere : MonoBehaviour
         if (ArtManager.Instance.Patterns[i] != null)
         {
             targetObject.renderer.material.SetTexture("_Detail", ArtManager.Instance.Patterns[i]);
-            targetObject.renderer.material.SetFloat("_DetailTiling", 15f);
+            targetObject.renderer.material.SetFloat("_DetailTiling", 15f * ArtManager.Instance.screenRatio);
         }
         // Assign new color.
         targetObject.renderer.material.color = colorList[i];
         CurrentColor = colorList[i];
-
         myLight.light.color = CurrentColor;
         MyMesh.renderer.material.SetColor("_RimColor", CurrentColor);
     }
@@ -248,7 +247,8 @@ public class Sphere : MonoBehaviour
     {
         isLocked = true;
         isLockable = false;
-        AnimateLightProperties(0f, 0f, 0.2f);
+        HOTween.To(_myTransform, 0.4f, new TweenParms().Prop("localScale", _myTransform.localScale * 1.2f).Ease(EaseType.EaseInOutBack));
+        AnimateLightProperties(0f, 0f, 0.4f);
         pulseSequence.Pause();
         MyMesh.GetComponent<MeshNoise>().Morph();
     }
@@ -257,6 +257,7 @@ public class Sphere : MonoBehaviour
     {
         isLocked = false;
         isLockable = false;
+        HOTween.To(_myTransform, 0.4f, new TweenParms().Prop("localScale", ArtManager.Instance.OriginalScale).Ease(EaseType.EaseInOutBack));
         MyMesh.GetComponent<MeshNoise>().StopMorph();
         StartCoroutine("ReturnShapeToNormal");
         AnimateLightProperties(_lightIntensity, _lightRange, 0.2f, CurrentColor);

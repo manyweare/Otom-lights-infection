@@ -14,21 +14,21 @@ public class PowerUpText : MonoBehaviour
 		_originalPosition = _myTransform.position;
 		_hidePosition = _originalPosition - new Vector3(0f, 1f, 0f);
 		// Changed to black, but can be used to set it to different colors.
-		guiText.color = Color.black;
+		guiText.color = MyColor;
 		guiText.text = "";
 	}
 
 	IEnumerator HideSelf()
 	{
 		HOTween.To(_myTransform, 0.2f, new TweenParms().Prop("position", _hidePosition).Ease(EaseType.EaseInExpo));
-		HOTween.To(guiText, 0.2f, "color", Color.white);
+		HOTween.To(guiText, 0.2f, "color", guiText.color - new Color(0f, 0f, 0f, 1f));
 		yield return new WaitForSeconds(0.2f);
 	}
 
 	IEnumerator ShowSelf()
 	{
 		HOTween.To(_myTransform, 0.2f, new TweenParms().Prop("position", _originalPosition).Ease(EaseType.EaseOutExpo));
-		HOTween.To(guiText, 0.2f, "color", Color.black);
+		HOTween.To(guiText, 0.2f, "color", MyColor);
 		yield return new WaitForSeconds(0.2f);
 	}
 
