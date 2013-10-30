@@ -5,16 +5,15 @@ using Holoville.HOTween;
 
 public class Sphere : MonoBehaviour
 {
-    public GameObject HighlightPrefab, ShadowPrefab;
     public Color32 CurrentColor = Color.black;
     public Color WrongColor = Color.red;
-    public GameObject MyMesh, Highlight;
+    public GameObject MyMesh, PixelateMesh;
     public Material PlainMaterial;
     private GameObject myShadow;
     private Transform _myTransform, _lockedTransform;
     private Sequence pulseSequence;
     private GameObject[] powerUpAnimPool = new GameObject[36];
-    private GameObject myLight;
+    private GameObject myLight, pixelatePlane;
     private int numTurnsUnlockable = 0;
     public bool isLocked = false;
 
@@ -61,7 +60,7 @@ public class Sphere : MonoBehaviour
     private Vector3[] _originalVerts;
 
     private bool stopMorph = false;
-    private float _lightIntensity = 10f;
+    private float _lightIntensity = 15f;
     private float _lightRange = 0.3f;
 
     void Awake()
@@ -74,11 +73,11 @@ public class Sphere : MonoBehaviour
         // Sequence with pulse that warns player that game over is imminent.
         pulseSequence = new Sequence(new SequenceParms().Loops(-1, LoopType.Restart));
         var firstPulseTween = HOTween.To(_myTransform, 0.4f,
-            new TweenParms().Prop("localScale", _myTransform.localScale + new Vector3(0.15f, 0.15f, 0.15f)).Ease(EaseType.EaseInExpo));
+            new TweenParms().Prop("localScale", _myTransform.localScale * 1.15f).Ease(EaseType.EaseInExpo));
         var backPulseTween = HOTween.To(_myTransform, 0.2f,
             new TweenParms().Prop("localScale", ArtManager.Instance.OriginalScale).Ease(EaseType.EaseOutExpo));
         var secondPulseTween = HOTween.To(_myTransform, 0.2f,
-            new TweenParms().Prop("localScale", _myTransform.localScale + new Vector3(0.1f, 0.1f, 0.1f)).Ease(EaseType.EaseInExpo));
+            new TweenParms().Prop("localScale", _myTransform.localScale * 1.1f).Ease(EaseType.EaseInExpo));
         pulseSequence.Append(firstPulseTween);
         pulseSequence.Append(backPulseTween);
         pulseSequence.Append(secondPulseTween);
@@ -104,7 +103,6 @@ public class Sphere : MonoBehaviour
         if (numTurnsUnlockable > 0)
         {
             --numTurnsUnlockable;
-            HOTween.To(myLight.light, 0.2f, "intensity", myLight.light.intensity + (float)numTurnsUnlockable);
         }
     }
 
@@ -117,12 +115,15 @@ public class Sphere : MonoBehaviour
         MyMesh.transform.localScale = ArtManager.Instance.OriginalScale;
         MyMesh.transform.parent = _myTransform;
         MyMesh.AddComponent<MeshNoise>();
+        MyMesh.GetComponent<MeshNoise>().scale = 4f;
+        MyMesh.GetComponent<MeshNoise>().speed = 0.5f;
 
         //InstantiateHighlightMesh(HighlightPrefab);
         //InstantiateLockedMesh(LockedPrefab);
         //InstantiateShadowMesh(ShadowPrefab);
         InstantiatePowerUpAnimPool(MyMesh);
         InstantiateLight();
+        InstantiatePixelatePlane();
 
         //StartCoroutine(Helper.PanTextureLinear(MyMesh, new Vector2(UnityEngine.Random.Range(-0.1f, 0.1f), UnityEngine.Random.Range(-0.1f, 0.1f)), 0f));
 
@@ -134,11 +135,18 @@ public class Sphere : MonoBehaviour
     {
         myLight = new GameObject("Light");
         myLight.AddComponent<Light>();
-        myLight.light.intensity = 0f;
         myLight.transform.position = _myTransform.position + new Vector3(0f, 0f, 0.1f);
         myLight.transform.parent = _myTransform;
-        myLight.light.range = _lightRange;
-        HOTween.To(myLight.light, 0.4f, "intensity", _lightIntensity);
+        myLight.light.range = 0f;
+        myLight.light.intensity = 0f;
+        //HOTween.To(myLight.light, 0.4f, "intensity", _lightIntensity);
+    }
+
+    void InstantiatePixelatePlane()
+    {
+        pixelatePlane = Instantiate(PixelateMesh, _myTransform.position - new Vector3(0f, 0f, 3f), Quaternion.identity) as GameObject;
+        pixelatePlane.transform.parent = _myTransform;
+        pixelatePlane.SetActive(false);
     }
 
     //public void InstantiateShadowMesh(GameObject prefab)
@@ -177,7 +185,8 @@ public class Sphere : MonoBehaviour
             powerUpAnimPool[i] = Instantiate(prefab, _myTransform.position + new Vector3(0f, 0f, -2f), Quaternion.identity) as GameObject;
             powerUpAnimPool[i].name = "power up obj " + i.ToString();
             powerUpAnimPool[i].renderer.material.color = CurrentColor;
-            powerUpAnimPool[i].transform.localScale *= 0.5f;
+            powerUpAnimPool[i].renderer.material.SetColor("_RimColor", CurrentColor);
+            powerUpAnimPool[i].transform.localScale *= 0.005f / 100f;
             powerUpAnimPool[i].transform.parent = _myTransform;
             powerUpAnimPool[i].SetActive(false);
         }
@@ -209,10 +218,15 @@ public class Sphere : MonoBehaviour
         isLockable = true;
         pulseSequence.Pause();
         AssignNewRandomColor(ArtManager.Instance.ColorList, MyMesh);
-        //Highlight.renderer.material.color = MyMesh.renderer.material.color;
+
+        //// Move this sphere to the top of the board and drop it.
+        //_myTransform.parent.position += new Vector3(0f, 1.5f, 0f);
+        //_myTransform.parent.collider.enabled = true;
+        //_myTransform.collider.enabled = true;
+
         ReturnShapeToNormalInstantly();
-        HOTween.To(_myTransform, 0.2f, "localScale", ArtManager.Instance.OriginalScale);
-        AnimateLightProperties(_lightIntensity, _lightRange, 0.2f);
+        HOTween.To(_myTransform, 0.2f, new TweenParms().Prop("localScale", ArtManager.Instance.OriginalScale).Ease(EaseType.EaseOutBack));
+        AnimateLightProperties(0f, 0f, 0.4f);
     }
 
     public void AnimateDeath()
@@ -220,7 +234,10 @@ public class Sphere : MonoBehaviour
         ReturnShapeToNormalInstantly();
         pulseSequence.Pause();
         AnimateLightProperties(0f, 0f, 0.2f);
-        HOTween.To(_myTransform, 0.1f, ArtManager.Instance.deathParms);
+        HOTween.To(_myTransform, 0.2f, ArtManager.Instance.deathParms);
+
+        //_myTransform.parent.collider.enabled = false;
+        //_myTransform.collider.enabled = false;
     }
 
     public void ActivateHighlight()
@@ -230,7 +247,7 @@ public class Sphere : MonoBehaviour
 
     public void DeactivateHighlight()
     {
-        AnimateLightProperties(_lightIntensity, _lightRange, 0.2f);
+        AnimateLightProperties(0f, 0f, 0.2f);
     }
 
     public void WrongSphere()
@@ -243,24 +260,31 @@ public class Sphere : MonoBehaviour
         AnimateLightProperties(_lightIntensity, _lightRange * 2f, 0.2f, ArtManager.Instance.ChainColor);
     }
 
+    void Pixelate()
+    {
+
+    }
+
     public void LockSelf()
     {
         isLocked = true;
         isLockable = false;
-        HOTween.To(_myTransform, 0.4f, new TweenParms().Prop("localScale", _myTransform.localScale * 1.2f).Ease(EaseType.EaseInOutBack));
+        //HOTween.To(_myTransform, 0.4f, new TweenParms().Prop("localScale", _myTransform.localScale * 1.2f).Ease(EaseType.EaseInOutBack));
         AnimateLightProperties(0f, 0f, 0.4f);
         pulseSequence.Pause();
         MyMesh.GetComponent<MeshNoise>().Morph();
+        pixelatePlane.SetActive(true);
     }
 
     public void UnlockSelf()
     {
         isLocked = false;
         isLockable = false;
-        HOTween.To(_myTransform, 0.4f, new TweenParms().Prop("localScale", ArtManager.Instance.OriginalScale).Ease(EaseType.EaseInOutBack));
+        //HOTween.To(_myTransform, 0.4f, new TweenParms().Prop("localScale", ArtManager.Instance.OriginalScale).Ease(EaseType.EaseInOutBack));
         MyMesh.GetComponent<MeshNoise>().StopMorph();
         StartCoroutine("ReturnShapeToNormal");
-        AnimateLightProperties(_lightIntensity, _lightRange, 0.2f, CurrentColor);
+        AnimateLightProperties(0f, 0f, 0.2f, CurrentColor);
+        pixelatePlane.SetActive(false);
     }
 
     public void HighlightLock()
@@ -285,7 +309,7 @@ public class Sphere : MonoBehaviour
         AssignNewRandomColor(ArtManager.Instance.ColorList, MyMesh);
         HOTween.To(_myTransform, 0.2f, ArtManager.Instance.showParms);
         if (!isLocked)
-            AnimateLightProperties(_lightIntensity, _lightRange, 0.2f, CurrentColor);
+            AnimateLightProperties(0f, 0f, 0.2f, CurrentColor);
     }
 
     void AnimateLightProperties(float intensity, float range, float duration)

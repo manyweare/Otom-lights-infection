@@ -259,7 +259,7 @@ public class DotManager : MonoBehaviour
         // Pool of spawned dots.
         var tempList = new List<GameObject>();
         // Determine where the game board will start to be generated.
-        var spawnPoint = new Vector3(-1f * ArtManager.Instance.screenRatio / 2f, _myTransform.position.y, _myTransform.position.z);
+        var spawnPoint = new Vector3(-1f * ArtManager.Instance.screenRatio / 2f, _myTransform.position.y + 2f, _myTransform.position.z);
         _myTransform.position = spawnPoint;
 
         // Instantiate all dots.
@@ -316,7 +316,6 @@ public class DotManager : MonoBehaviour
             _myTransform.position += new Vector3(CIRCLE_SIZE / (float)columns * ArtManager.Instance.screenRatio, -((CIRCLE_SIZE / (float)rows) * (float)rows) * ArtManager.Instance.screenRatio, 0f);
         }
         _myTransform.position = spawnPoint;
-        yield return null;
     }
 
     public IEnumerator DestroySphere(Sphere dotToDestroy)

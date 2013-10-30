@@ -64,7 +64,7 @@ public static class Helper
         return new Color32(r, g, b, 255);
     }
 
-    public static IEnumerator PanTextureLinear(GameObject obj, Vector2 offset, float duration)
+    public static IEnumerator PanTextureLinear(GameObject obj, string textureName, Vector2 offset, float duration)
     {
         if (!obj.renderer.enabled)
             yield break;
@@ -79,13 +79,13 @@ public static class Helper
         while (elapsedTime < duration)
         {
             uvOffset += (offset * Time.deltaTime);
-            obj.renderer.material.SetTextureOffset("_MainTex", uvOffset);
+            obj.renderer.material.SetTextureOffset(textureName, uvOffset);
             elapsedTime = Time.time - startTime;
             yield return null;
         }
     }
 
-    public static IEnumerator PanTextureEased(GameObject obj, Vector2 offset, float duration)
+    public static IEnumerator PanTextureEased(GameObject obj, string textureName, Vector2 offset, float duration)
     {
         if (!obj.renderer.enabled)
             yield break;
@@ -100,7 +100,7 @@ public static class Helper
         while (elapsedTime < duration)
         {
             uvOffset += (offset * Time.deltaTime) * 1.1f;
-            obj.renderer.material.SetTextureOffset("_MainTex", uvOffset);
+            obj.renderer.material.SetTextureOffset(textureName, uvOffset);
             elapsedTime = Time.time - startTime;
             yield return null;
         }

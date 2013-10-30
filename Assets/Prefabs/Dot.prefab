@@ -41,7 +41,7 @@ Transform:
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: .00999999978, y: .00999999978, z: .00999999978}
   m_Children:
   - {fileID: 400002}
   m_Father: {fileID: 0}
@@ -66,7 +66,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .189999998, y: .189999998, z: .189999998}
+  m_Size: {x: 19, y: 19, z: 19}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -79,17 +79,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c671808897a524f5b9f834a629fdcf36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightPrefab: {fileID: 100000, guid: 651491e473ed7460f950ad63c10d83b0, type: 2}
-  LockedPrefab: {fileID: 100000, guid: 5ac02d9d9e6fb4a82853872b87bdf414, type: 2}
-  ShadowPrefab: {fileID: 100000, guid: 51fd92983d9312049bd8a0359c5e9c04, type: 2}
   CurrentColor:
     serializedVersion: 2
     rgba: 4278190080
   WrongColor: {r: 1, g: 0, b: 0, a: 1}
-  MyMesh: {fileID: 0}
-  Highlight: {fileID: 0}
-  Locked: {fileID: 0}
+  MyMesh: {fileID: 100000, guid: 51c07ffca95b5274795b4168bcaaaac7, type: 2}
+  PixelateMesh: {fileID: 100000, guid: f7a4bd57dbc32f8458f75ca9cf3063a2, type: 2}
   PlainMaterial: {fileID: 2100000, guid: e46d8ae26bf23a44d8f5db7d5f2f05d6, type: 2}
+  isLocked: 0
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -100,7 +97,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: .0799999982
+  m_Radius: 800
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &100100000
 Prefab:

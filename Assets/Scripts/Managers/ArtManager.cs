@@ -40,7 +40,7 @@ public class ArtManager : MonoBehaviour
 	public Color LockedColor = Color.white;
 	[HideInInspector]
 	public float screenRatio = 1f;
-	private const float LOCKED_SCALE = 0.8f;
+	private const float LOCKED_SCALE = 0.008f;
 	private Vector3 lockedVector = Vector3.zero;
 
 	void Awake()
@@ -51,7 +51,7 @@ public class ArtManager : MonoBehaviour
 
 		DataMeshList.Add(CircleMesh);
 
-		OriginalScale = new Vector3(1f, 1f, 1f) * screenRatio;
+		OriginalScale = (new Vector3(1f, 1f, 1f) * screenRatio) / 100f;
 		lockedVector = new Vector3(LOCKED_SCALE, LOCKED_SCALE, LOCKED_SCALE);
 
 		ColorList.Add(Color01);
@@ -66,25 +66,25 @@ public class ArtManager : MonoBehaviour
 		ExtraColors.Add(GreyDotColor);
 		ExtraColors.Add(WhiteDotColor);
 
-		bigSphereParms.Prop("localScale", new Vector3(1.2f, 1.2f, 1.2f));
+		bigSphereParms.Prop("localScale", OriginalScale * 1.2f);
 		bigSphereParms.Ease(EaseType.EaseOutBack);
 
 		deathParms.Prop("localScale", Vector3.zero);
-		deathParms.Ease(EaseType.EaseInExpo);
+		deathParms.Ease(EaseType.EaseInBack);
 
 		lockParms.Prop("localScale", lockedVector);
 		lockParms.Ease(EaseType.EaseOutBack);
 
-        resetLockParms.Prop("localScale", new Vector3(0.3f, 0.3f, 0.3f));
+        resetLockParms.Prop("localScale", OriginalScale * 0.3f);
 		resetLockParms.Ease(EaseType.EaseOutExpo);
 
-		unlockParms.Prop("localScale", new Vector3(3f, 3f, 3));
+		unlockParms.Prop("localScale", OriginalScale * 3f);
 		unlockParms.Ease(EaseType.EaseInBack);
 		
-		highlightLockParms.Prop("localScale", lockedVector + new Vector3(0.3f, 0.3f, 0.3f));
+		highlightLockParms.Prop("localScale", lockedVector * 1.3f);
 		highlightLockParms.Ease(EaseType.EaseOutBack);
 
-		lockLoopParms.Prop("localScale", lockedVector + new Vector3(0.1f, 0.1f, 0.1f));
+		lockLoopParms.Prop("localScale", lockedVector * 1.1f);
 		lockLoopParms.Loops(-1, LoopType.Yoyo);
 		lockLoopParms.Ease(EaseType.EaseInOutCubic);
 
